@@ -61,4 +61,3 @@ plt.ylabel("Cell State Values")
 plt.show()
 
 
-![image](https://github.com/user-attachments/assets/121d1c0b-f329-4ae9-9c52-228249a03621)
