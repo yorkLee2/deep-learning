@@ -1,0 +1,61 @@
+import torch
+import torch.nn as nn
+import matplotlib.pyplot as plt
+import numpy as np
+
+# 设置随机种子
+torch.manual_seed(42)
+
+# 1️⃣ 定义 LSTM 模型
+class SimpleLSTM(nn.Module):
+    def __init__(self, input_size, hidden_size, num_layers):
+        super(SimpleLSTM, self).__init__()
+        self.hidden_size = hidden_size
+        self.num_layers = num_layers
+        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True)
+
+    def forward(self, x, hidden):
+        out, hidden = self.lstm(x, hidden)  # LSTM 计算
+        return out, hidden
+
+# 2️⃣ 初始化 LSTM
+input_size = 1       # 每个时间步输入一个值
+hidden_size = 5      # LSTM 隐藏层大小
+num_layers = 1       # 只用一层 LSTM
+
+lstm_model = SimpleLSTM(input_size, hidden_size, num_layers)
+
+# 3️⃣ 创建时间序列输入数据
+seq_len = 20  # 序列长度（时间步数）
+batch_size = 1  # 只输入一个样本
+x_input = torch.linspace(0, 10, seq_len).reshape(batch_size, seq_len, input_size)  # 形状: [1, 20, 1]
+
+# 4️⃣ 初始化隐藏状态（h_0, c_0）
+h0 = torch.zeros(num_layers, batch_size, hidden_size)  # 形状: [1, 1, 5]
+c0 = torch.zeros(num_layers, batch_size, hidden_size)
+
+# 5️⃣ 运行 LSTM
+hidden_states = []  # 记录每个时间步的隐藏状态 h_t
+cell_states = []    # 记录每个时间步的细胞状态 C_t
+
+out, (hn, cn) = lstm_model(x_input, (h0, c0))  # 运行 LSTM
+
+for t in range(seq_len):
+    hidden_states.append(out[0, t, :].detach().numpy())  # 记录 h_t
+    cell_states.append(cn[0, 0, :].detach().numpy())     # 记录 C_t
+
+# 6️⃣ 可视化 h_t 和 C_t 变化
+plt.figure(figsize=(12, 5))
+plt.subplot(1, 2, 1)
+plt.plot(hidden_states)
+plt.title("LSTM Hidden States ($h_t$) Over Time")
+plt.xlabel("Time Step")
+plt.ylabel("Hidden State Values")
+
+plt.subplot(1, 2, 2)
+plt.plot(cell_states)
+plt.title("LSTM Cell States ($C_t$) Over Time")
+plt.xlabel("Time Step")
+plt.ylabel("Cell State Values")
+
+plt.show()
