@@ -1,0 +1,10 @@
+path: C:/Users/hyc49/Desktop/pr2/pr2
+train: C:/Users/hyc49/Desktop/pr2/pr2/images/train
+val: C:/Users/hyc49/Desktop/pr2/pr2/images/val
+test: ''
+names:
+  0: car
+  1: medium truck
+  2: large truck
+weights: [1, 5, 7]  # 让 medium truck 和 large truck 增强训练权重
+
