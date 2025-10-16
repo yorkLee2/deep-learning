@@ -289,3 +289,4 @@ test_predictions_transformed = np.where(test_predictions == 0, -1, 1)
 with open("prediction.txt", "w") as f:
     for pred in test_predictions_transformed.flatten():
         f.write(f"{int(pred)}\n")
+
